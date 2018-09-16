@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/widgets.dart';
 
 import 'controller.dart';
@@ -19,15 +18,16 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
   ImageFormField({
     Key key,
     this.controller,
+    @required BuildImagePreviewCallback<T> previewImageBuilder,
+    @required BuildButton buttonBuilder,
+    @required InitializeFileAsImageCallback<T> initializeFileAsImage,
     List<T> initialValue,
-    bool autovalidate = false,
     FormFieldSetter<List<T>> onSaved,
     FormFieldValidator<List<T>> validator,
-    T Function(File) uploadImage,
-    Widget button,
-    @required BuildImagePreviewCallback<T> previewImageBuilder
+    TextStyle errorTextStyle,
+    bool autovalidate = false,
+    bool shouldAllowMultiple = true
   }) :
-      assert(initialValue == null),
       assert(autovalidate != null),
       super(
         key: key,
@@ -42,10 +42,17 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
             children: [
               ImageButton<T>(
                 controller: state._effectiveController,
-                child: button,
-                uploadImage: uploadImage
+                buttonBuilder: buttonBuilder,
+                initializeFileAsImage: initializeFileAsImage,
+                shouldAllowMultiple: shouldAllowMultiple,
               ),
-              ImagePreview(
+              field.hasError
+                ? Text(
+                    field.errorText,
+                    style: errorTextStyle,
+                  )
+                : Container(),
+              ImagesPreview<T>(
                 controller: state._effectiveController,
                 previewImageBuilder: previewImageBuilder,
               )
@@ -55,16 +62,17 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
       );
 
   /// Controls the images being edited.
-  final ImageingController<T> controller;
+  final ImageFieldController<T> controller;
 
   @override
   _ImageFormFieldState<T> createState() => new _ImageFormFieldState<T>();
 }
 
+// Adapted from [TextFormField]
 class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
-  ImageingController<T> _controller;
+  ImageFieldController<T> _controller;
 
-  ImageingController<T> get _effectiveController => widget.controller ?? _controller;
+  ImageFieldController<T> get _effectiveController => widget.controller ?? _controller;
 
   @override
   ImageFormField<T> get widget => super.widget;
@@ -73,7 +81,7 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
   void initState() {
     super.initState();
     if (widget.controller == null) {
-      _controller = new ImageingController<T>(widget.initialValue);
+      _controller = new ImageFieldController<T>(widget.initialValue);
     } else {
       widget.controller.addListener(_handleControllerChanged);
     }
@@ -87,7 +95,7 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
       widget.controller?.addListener(_handleControllerChanged);
 
       if (oldWidget.controller != null && widget.controller == null)
-        _controller = new ImageingController<T>.fromValue(oldWidget.controller.value);
+        _controller = new ImageFieldController<T>.fromValue(oldWidget.controller.value);
       if (widget.controller != null) {
         setValue(widget.controller.value);
         if (oldWidget.controller == null)

@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-class ImageingController<T> extends ValueNotifier<List<T>> {
-  ImageingController(this.value) : super(value);
+class ImageFieldController<T> extends ValueNotifier<List<T>> {
+  ImageFieldController(this.value) : super(value);
 
   /// Creates a controller for an editable image field from an initial value.
-  ImageingController.fromValue(List<T> value)
+  ImageFieldController.fromValue(List<T> value)
     : super(value ?? List<T>());
 
   List<T> value;

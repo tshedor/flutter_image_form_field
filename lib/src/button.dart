@@ -1,30 +1,30 @@
 import 'package:flutter/widgets.dart';
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'controller.dart';
+import 'types.dart';
 
 class ImageButton<I> extends StatelessWidget {
   ImageButton({
     Key key,
     @required this.controller,
-    @required this.uploadImage,
-    @required this.child,
-    this.shouldAllowMultiple = true
+    @required this.initializeFileAsImage,
+    @required this.buttonBuilder,
+    this.shouldAllowMultiple
   }) : super( key : key );
 
-  final ImageingController controller;
-  final Widget child;
-  final I Function(File) uploadImage;
+  final ImageFieldController controller;
+  final BuildButton buttonBuilder;
+  final InitializeFileAsImageCallback<I> initializeFileAsImage;
   final bool shouldAllowMultiple;
 
   Future getImage(ImageSource source) async {
     final image = await ImagePicker.pickImage(source: source);
 
     if (image != null) {
-      final newImage = uploadImage(image);
+      final newImage = initializeFileAsImage(image);
 
       if (shouldAllowMultiple) {
         controller.add(newImage);
@@ -41,7 +41,7 @@ class ImageButton<I> extends StatelessWidget {
         children: [
           new ListTile(
             leading: new Icon(Icons.camera_alt),
-            title: new Text('Take a Picture'),
+            title: new Text("Take a Picture"),
             onTap: () {
               getImage(ImageSource.camera);
               Navigator.pop(context);
@@ -49,7 +49,7 @@ class ImageButton<I> extends StatelessWidget {
           ),
           new ListTile(
             leading: new Icon(Icons.photo_library),
-            title: new Text('Camera Roll'),
+            title: new Text("Camera Roll"),
             onTap: () {
               getImage(ImageSource.gallery);
               Navigator.pop(context);
@@ -62,6 +62,8 @@ class ImageButton<I> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final child = buttonBuilder(context, controller.value.length);
+
     return new GestureDetector(
       onTap: () => _handlePressed(context),
       child: child

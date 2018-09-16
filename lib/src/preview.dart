@@ -4,8 +4,8 @@ import 'package:flutter/material.dart' show Icons;
 import 'controller.dart';
 import 'types.dart';
 
-class _ImageImagePreview<T> extends StatelessWidget {
-  const _ImageImagePreview({
+class _ImagePreview<T> extends StatelessWidget {
+  const _ImagePreview({
     Key key,
     @required this.image,
     @required this.previewImageBuilder,
@@ -22,7 +22,7 @@ class _ImageImagePreview<T> extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.topEnd,
         children: [
-          previewImageBuilder(image),
+          previewImageBuilder(context, image),
           GestureDetector(
             onTap: onRemove,
             child: const Icon(
@@ -36,27 +36,27 @@ class _ImageImagePreview<T> extends StatelessWidget {
   }
 }
 
-class ImagePreview<I> extends StatefulWidget {
-  const ImagePreview({
+class ImagesPreview<T> extends StatefulWidget {
+  const ImagesPreview({
     @required this.controller,
     @required this.previewImageBuilder
   });
 
-  final ImageingController<I> controller;
-  final BuildImagePreviewCallback<I> previewImageBuilder;
+  final ImageFieldController<T> controller;
+  final BuildImagePreviewCallback<T> previewImageBuilder;
 
   @override
-  _ImagePreviewState<I> createState() => _ImagePreviewState<I>();
+  _ImagesPreviewState<T> createState() => _ImagesPreviewState<T>();
 }
 
-class _ImagePreviewState<I> extends State<ImagePreview> {
-  List<I> images;
+class _ImagesPreviewState<T> extends State<ImagesPreview> {
+  List<T> images;
 
-  Widget buildImage(I image) {
+  Widget buildImage(T image) {
     if (image == null)
       return Container();
 
-    return _ImageImagePreview<I>(
+    return _ImagePreview<T>(
       image: image,
       previewImageBuilder: widget.previewImageBuilder,
       onRemove: () => widget.controller.remove(image)

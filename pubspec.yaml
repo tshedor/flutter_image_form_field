@@ -1,6 +1,6 @@
 name: image_form_field
 description: Pretty time formatting for pretty code
-version: 1.0.0
+version: 0.0.1
 homepage: https://github.com/tshedor/time_ago
 author: Tim Shedor<opensource@timshedor.com>
 
@@ -8,7 +8,8 @@ environment:
   sdk: '>=1.20.1 <3.0.0'
 
 dev_dependencies:
-  test: ^1.3.2
+  flutter_test:
+    sdk: flutter
 
 dependencies:
   flutter:
