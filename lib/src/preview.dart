@@ -65,7 +65,7 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
 
   @override
   Widget build(BuildContext context) {
-    if (images == null)
+    if (images == null || images.isEmpty)
       return Container();
 
     return Container(
@@ -74,10 +74,13 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
         ? SizedBox( child: buildImage(images.first) )
         : SizedBox(
             height: 150.0,
-            child: GridView.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 10.0,
-              children: images.reversed.map(buildImage).toList(),
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 10.0,
+                crossAxisCount: 1
+              ),
+              itemCount: images.length,
+              itemBuilder: (_, idx) => buildImage(images[idx]),
               scrollDirection: Axis.horizontal,
             )
           )
@@ -94,11 +97,12 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
   void initState() {
     super.initState();
     widget.controller.addListener(_setImages);
+    _setImages();
   }
 
   @override
   void dispose() {
-    super.dispose();
     widget.controller.removeListener(_setImages);
+    super.dispose();
   }
 }
