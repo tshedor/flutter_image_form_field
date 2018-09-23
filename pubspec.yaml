@@ -1,7 +1,7 @@
 name: image_form_field
-description: Pretty time formatting for pretty code
+description: Upload images in Flutter forms
 version: 0.0.1
-homepage: https://github.com/tshedor/time_ago
+homepage: https://github.com/tshedor/flutter_image_form_field
 author: Tim Shedor<opensource@timshedor.com>
 
 environment:

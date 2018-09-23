@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 /// An observer used in conjunction with the [ImageFormField].
 ///   This controller's primary purpose is to update images displayed

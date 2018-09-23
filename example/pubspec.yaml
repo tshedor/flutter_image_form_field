@@ -1,0 +1,23 @@
+name: image_form_field_example
+description: Demonstrates how to use the image_form_field plugin.
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_auth: ^0.5.20
+  cloud_firestore: ^0.8.0
+  firebase_storage: ^1.0.2
+  uuid: ^1.0.1
+  image_form_field:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# For information on the generic Dart part of this file, see the
+# following page: https://www.dartlang.org/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  uses-material-design: true

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show showModalBottomSheet, Icons, ListTile;
 import 'package:image_picker/image_picker.dart';
 
 import 'controller.dart';
