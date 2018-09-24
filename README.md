@@ -58,20 +58,22 @@ ImageFormField<ImageInputAdapter>(
 )
 ```
 
-For a full example that includes uploading an image, see [example/lib/main.dart](`example/lib/main.dart`).
+For a full example that includes uploading an image, see [example/lib/main.dart](example/lib/main.dart).
 
 ## Parameters
 
+(T == declared display type, i.e. `ImageFormField<T>`)
+
 | name | type | required | description |
 |---|---|---|---|
-| `previewImageBuilder` | Widget Function(BuildContext, <declared type>) | * | How the image is rendered below the upload button |
+| `previewImageBuilder` | Widget Function(BuildContext, T) | * | How the image is rendered below the upload button |
 | `buttonBuilder` | Widget Function(BuildContext, [int]) | * | The display of the button. **Do not use `FlatButton`**; the button is already wrapped in a `GestureRecognizer` |
-| `initializeFileAsImage` | <declared type> Function(File) | * | Convert an upload to the adapter class |
+| `initializeFileAsImage` | T Function(File) | * | Convert an upload to the adapter class |
 | `controller` | ImageFieldController | | Direct access to the images currently displayed or uploaded |
-| `initialValue` | List<declared type> | | Images displayed on initial render; if `initialValue` is set in `initState` or by some other non-pass through method, **do not render the field until the value is set**. |
-| `onSaved` | VoidCallback Function(List<declared type>) | | Handle the uploaded/remote images when the form is saved |
-| `validator` | VoidCallback Function(List<declared type>) | | Handle the uploaded/remote images when the form is validated |
-| `errorTextStyle` | TextStyle | | Control how text display when field is invalid; often it's best to use `Theme.of(context).inputDecorationTheme.errorStyle |
+| `initialValue` | List<T> | | Images displayed on initial render; if `initialValue` is set in `initState` or by some other non-pass through method, **do not render the field until the value is set**. |
+| `onSaved` | VoidCallback Function(List<T>) | | Handle the uploaded/remote images when the form is saved |
+| `validator` | VoidCallback Function(List<T>) | | Handle the uploaded/remote images when the form is validated |
+| `errorTextStyle` | TextStyle | | Control how text display when field is invalid; often it's best to use `Theme.of(context).inputDecorationTheme.errorStyle` |
 | `autoValidate` | bool | | If field should autovalidate (defaults to false) |
 | `shouldAllowMultiple` | bool | | If field permits more than one image upload (defaults to true) |
 
