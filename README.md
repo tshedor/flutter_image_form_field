@@ -40,8 +40,7 @@ Finally, in a Flutter `Form`:
 import 'package:image_form_field/image_form_field.dart';
 
 ImageFormField<ImageInputAdapter>(
-  // `ImageInputAdapter` is the implied type for `image`
-  previewImageBuilder: (_, image) =>
+  previewImageBuilder: (_, ImageInputAdapter image) =>
     image.widgetize(),
   buttonBuilder: (_, int count) =>
     Container(
@@ -49,8 +48,7 @@ ImageFormField<ImageInputAdapter>(
         count == null || count < 1 ? "Upload Image" : "Upload More"
       )
     )
-  // File is the implied type for `file`
-  initializeFileAsImage: (file) =>
+  initializeFileAsImage: (File file) =>
     ImageInputAdapter(file: file),
   initialValue: existingPhotoUrl == null ? null : (List<ImageInputImageAdapter>()..add(ImageInputImageAdapter(url: existingPhotoUrl))),
   // Even if `shouldAllowMultiple` is true, images will always be a `List` of the declared type (i.e. `ImageInputAdater`).

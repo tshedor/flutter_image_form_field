@@ -10,7 +10,7 @@ class _ImagePreview<T> extends StatelessWidget {
     @required this.image,
     @required this.previewImageBuilder,
     this.onRemove,
-  }) : super(key : key);
+  }) : super(key: key);
 
   final T image;
   final VoidCallback onRemove;
@@ -53,38 +53,31 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
   List<T> images;
 
   Widget buildImage(T image) {
-    if (image == null)
-      return Container();
+    if (image == null) return Container();
 
     return _ImagePreview<T>(
-      image: image,
-      previewImageBuilder: widget.previewImageBuilder,
-      onRemove: () => widget.controller.remove(image)
-    );
+        image: image,
+        previewImageBuilder: widget.previewImageBuilder,
+        onRemove: () => widget.controller.remove(image));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (images == null || images.isEmpty)
-      return Container();
+    if (images == null || images.isEmpty) return Container();
 
     return Container(
-      margin: const EdgeInsets.only(top: 10.0),
-      child: images.length == 1
-        ? SizedBox( child: buildImage(images.first) )
-        : SizedBox(
-            height: 150.0,
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 10.0,
-                crossAxisCount: 1
-              ),
-              itemCount: images.length,
-              itemBuilder: (_, idx) => buildImage(images[idx]),
-              scrollDirection: Axis.horizontal,
-            )
-          )
-    );
+        margin: const EdgeInsets.only(top: 10.0),
+        child: images.length == 1
+            ? SizedBox(child: buildImage(images.first))
+            : SizedBox(
+                height: 150.0,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      mainAxisSpacing: 10.0, crossAxisCount: 1),
+                  itemCount: images.length,
+                  itemBuilder: (_, idx) => buildImage(images[idx]),
+                  scrollDirection: Axis.horizontal,
+                )));
   }
 
   void _setImages() {

@@ -15,31 +15,31 @@ import 'types.dart';
 /// pass a [GlobalKey] to the constructor and use [GlobalKey.currentState] to
 /// save or reset the form field.
 class ImageFormField<T extends Object> extends FormField<List<T>> {
-  ImageFormField({
-    Key key,
-    this.controller,
-    @required BuildImagePreviewCallback<T> previewImageBuilder,
-    @required BuildButton buttonBuilder,
-    @required InitializeFileAsImageCallback<T> initializeFileAsImage,
-    List<T> initialValue,
-    FormFieldSetter<List<T>> onSaved,
-    FormFieldValidator<List<T>> validator,
-    TextStyle errorTextStyle,
-    bool autovalidate = false,
-    bool shouldAllowMultiple = true
-  }) :
-      assert(autovalidate != null),
-      super(
-        key: key,
-        initialValue: controller != null ? controller.value : (initialValue ?? List<T>()),
-        onSaved: onSaved,
-        validator: validator,
-        autovalidate: autovalidate,
-        builder: (FormFieldState<List<T>> field) {
-          final _ImageFormFieldState<T> state = field;
+  ImageFormField(
+      {Key key,
+      this.controller,
+      @required BuildImagePreviewCallback<T> previewImageBuilder,
+      @required BuildButton buttonBuilder,
+      @required InitializeFileAsImageCallback<T> initializeFileAsImage,
+      List<T> initialValue,
+      FormFieldSetter<List<T>> onSaved,
+      FormFieldValidator<List<T>> validator,
+      TextStyle errorTextStyle,
+      bool autovalidate = false,
+      bool shouldAllowMultiple = true})
+      : assert(autovalidate != null),
+        super(
+          key: key,
+          initialValue: controller != null
+              ? controller.value
+              : (initialValue ?? List<T>()),
+          onSaved: onSaved,
+          validator: validator,
+          autovalidate: autovalidate,
+          builder: (FormFieldState<List<T>> field) {
+            final _ImageFormFieldState<T> state = field;
 
-          return ListBody(
-            children: [
+            return ListBody(children: [
               ImageButton<T>(
                 controller: state._effectiveController,
                 buttonBuilder: buttonBuilder,
@@ -47,19 +47,18 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
                 shouldAllowMultiple: shouldAllowMultiple,
               ),
               field.hasError
-                ? Text(
-                    field.errorText,
-                    style: errorTextStyle,
-                  )
-                : Container(),
+                  ? Text(
+                      field.errorText,
+                      style: errorTextStyle,
+                    )
+                  : Container(),
               ImagesPreview<T>(
                 controller: state._effectiveController,
                 previewImageBuilder: previewImageBuilder,
               )
-            ]
-          );
-        },
-      );
+            ]);
+          },
+        );
 
   /// Controls the images being edited.
   final ImageFieldController<T> controller;
@@ -72,7 +71,8 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
 class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
   ImageFieldController<T> _controller;
 
-  ImageFieldController<T> get _effectiveController => widget.controller ?? _controller;
+  ImageFieldController<T> get _effectiveController =>
+      widget.controller ?? _controller;
 
   @override
   ImageFormField<T> get widget => super.widget;
@@ -95,11 +95,11 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
       widget.controller?.addListener(_handleControllerChanged);
 
       if (oldWidget.controller != null && widget.controller == null)
-        _controller = new ImageFieldController<T>.fromValue(oldWidget.controller.value);
+        _controller =
+            new ImageFieldController<T>.fromValue(oldWidget.controller.value);
       if (widget.controller != null) {
         setValue(widget.controller.value);
-        if (oldWidget.controller == null)
-          _controller = null;
+        if (oldWidget.controller == null) _controller = null;
       }
     }
   }
