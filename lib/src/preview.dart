@@ -39,11 +39,13 @@ class _ImagePreview<T> extends StatelessWidget {
 class ImagesPreview<T> extends StatefulWidget {
   const ImagesPreview({
     @required this.controller,
-    @required this.previewImageBuilder
+    @required this.previewImageBuilder,
+    this.height
   });
 
   final ImageFieldController<T> controller;
   final BuildImagePreviewCallback<T> previewImageBuilder;
+  final double height;
 
   @override
   _ImagesPreviewState<T> createState() => _ImagesPreviewState<T>();
@@ -68,9 +70,11 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
     return Container(
         margin: const EdgeInsets.only(top: 10.0),
         child: images.length == 1
-            ? SizedBox(child: buildImage(images.first))
+            ? SizedBox(
+              height: widget.height ?? 150.0,
+              child: buildImage(images.first))
             : SizedBox(
-                height: 150.0,
+                height: widget.height ?? 150.0,
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       mainAxisSpacing: 10.0, crossAxisCount: 1),
