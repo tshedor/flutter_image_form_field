@@ -1,4 +1,15 @@
-## Unreleased
+## [0.0.5] - 27 September 2018
+
+* max count
+
+## [0.0.4] - 27 September 2018
+
+* Custom text
+
+
+## [0.0.3] - 27 September 2018
+
+* Android X
 
 ## [0.0.2] - 27 September 2018
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:image_form_field/image_form_field.dart';
+import 'package:image_form_field_x/image_form_field_x.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
