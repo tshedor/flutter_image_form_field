@@ -1,6 +1,6 @@
 name: image_form_field
 description: Upload images in Flutter forms
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/tshedor/flutter_image_form_field
 author: Tim Shedor <opensource@timshedor.com>
 

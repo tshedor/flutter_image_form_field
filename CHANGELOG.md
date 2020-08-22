@@ -1,5 +1,9 @@
 ## Unreleased
 
+## [0.0.3] - 22 August 2020
+
+* Bump `image_picker` (#6)
+
 ## [0.0.2] - 27 September 2018
 
 * Apply recommended formatting via `flutter format`
