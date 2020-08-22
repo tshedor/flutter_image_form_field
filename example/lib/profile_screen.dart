@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:image_form_field/image_form_field.dart';
+import 'package:image_form_field_x/image_form_field_x.dart';
 
 import 'image_input_adapter.dart';
 import 'upload_button.dart';

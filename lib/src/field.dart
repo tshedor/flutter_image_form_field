@@ -21,6 +21,9 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
       @required BuildImagePreviewCallback<T> previewImageBuilder,
       @required BuildButton buttonBuilder,
       @required InitializeFileAsImageCallback<T> initializeFileAsImage,
+      String takePhotoText,
+      String cameraRollText,
+      int maxCount,
       List<T> initialValue,
       FormFieldSetter<List<T>> onSaved,
       FormFieldValidator<List<T>> validator,
@@ -45,6 +48,9 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
                 buttonBuilder: buttonBuilder,
                 initializeFileAsImage: initializeFileAsImage,
                 shouldAllowMultiple: shouldAllowMultiple,
+                takePhotoText: takePhotoText,
+                cameraRollText: cameraRollText,
+                maxCount: maxCount,
               ),
               field.hasError
                   ? Text(
