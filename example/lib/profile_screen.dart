@@ -18,25 +18,20 @@ class _ProfileFormState extends State<_ProfileForm> {
   bool _doesUserExist = true;
 
   void submit() {
-    if( _formKey.currentState.validate() ) {
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       var newInfo = new UserUpdateInfo();
       final uploadedFile = _images.firstWhere((i) => i.isFile, orElse: () => null);
 
-      if ( uploadedFile != null ) {
+      if (uploadedFile != null) {
         uploadedFile.save().then((resp) {
           newInfo.photoUrl = resp.originalUrl;
         });
       }
 
-      FirebaseAuth.instance.updateProfile(newInfo)
-        .then((u) {
-          Scaffold.of(context).showSnackBar(
-            const SnackBar(
-              content: const Text("Lookin' good!")
-            )
-          );
-        });
+      FirebaseAuth.instance.updateProfile(newInfo).then((u) {
+        Scaffold.of(context).showSnackBar(const SnackBar(content: const Text("Lookin' good!")));
+      });
     }
   }
 
@@ -53,26 +48,22 @@ class _ProfileFormState extends State<_ProfileForm> {
       child: ListBody(
         children: [
           ImageFormField<ImageInputAdapter>(
-            shouldAllowMultiple: shouldAllowMultiple,
-            onSaved: (val) => _images = val,
-            initialValue: _user?.photoUrl == null
-              ? null
-              : (List<ImageInputAdapter>()..add(ImageInputAdapter(url: _user.photoUrl))),
-            initializeFileAsImage: (file) =>
-              ImageInputAdapter(file: UploadableImage(file, storagePath: "profileImages")),
-            buttonBuilder: (_, count) =>
-              PhotoUploadButton(
-                count: count,
-                shouldAllowMultiple: shouldAllowMultiple
-              ),
-            previewImageBuilder: (_, image) => image.widgetize()
-          ),
+              shouldAllowMultiple: shouldAllowMultiple,
+              onSaved: (val) => _images = val,
+              initialValue: _user?.photoUrl == null
+                  ? null
+                  : (List<ImageInputAdapter>()..add(ImageInputAdapter(url: _user.photoUrl))),
+              initializeFileAsImage: (file) =>
+                  ImageInputAdapter(file: UploadableImage(file, storagePath: "profileImages")),
+              buttonBuilder: (_, count) =>
+                  PhotoUploadButton(count: count, shouldAllowMultiple: shouldAllowMultiple),
+              previewImageBuilder: (_, image) => image.widgetize()),
           FlatButton(
             onPressed: submit,
-            child: const Text("Update Profile")
+            child: const Text("Update Profile"),
           )
-        ]
-      )
+        ],
+      ),
     );
   }
 
@@ -92,7 +83,6 @@ class _ProfileFormState extends State<_ProfileForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _fetchUser();
   }
@@ -107,8 +97,8 @@ class ProfileScreen extends StatelessWidget {
         title: const Text("Edit Profile"),
       ),
       body: SingleChildScrollView(
-        child: _ProfileForm()
-      )
+        child: _ProfileForm(),
+      ),
     );
   }
 }

@@ -25,17 +25,14 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
       FormFieldSetter<List<T>> onSaved,
       FormFieldValidator<List<T>> validator,
       TextStyle errorTextStyle,
-      bool autovalidate = false,
+      AutovalidateMode autovalidateMode,
       bool shouldAllowMultiple = true})
-      : assert(autovalidate != null),
-        super(
+      : super(
           key: key,
-          initialValue: controller != null
-              ? controller.value
-              : (initialValue ?? List<T>()),
+          initialValue: controller != null ? controller.value : (initialValue ?? List<T>()),
           onSaved: onSaved,
           validator: validator,
-          autovalidate: autovalidate,
+          autovalidateMode: autovalidateMode,
           builder: (FormFieldState<List<T>> field) {
             final _ImageFormFieldState<T> state = field;
 
@@ -71,8 +68,7 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
 class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
   ImageFieldController<T> _controller;
 
-  ImageFieldController<T> get _effectiveController =>
-      widget.controller ?? _controller;
+  ImageFieldController<T> get _effectiveController => widget.controller ?? _controller;
 
   @override
   ImageFormField<T> get widget => super.widget;
@@ -95,8 +91,7 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
       widget.controller?.addListener(_handleControllerChanged);
 
       if (oldWidget.controller != null && widget.controller == null)
-        _controller =
-            new ImageFieldController<T>.fromValue(oldWidget.controller.value);
+        _controller = ImageFieldController<T>.fromValue(oldWidget.controller.value);
       if (widget.controller != null) {
         setValue(widget.controller.value);
         if (oldWidget.controller == null) _controller = null;
@@ -127,7 +122,6 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
     // notifications for changes originating from within this class -- for
     // example, the reset() method. In such cases, the FormField value will
     // already have been set.
-    if (_effectiveController.value != value)
-      didChange(_effectiveController.value);
+    if (_effectiveController.value != value) didChange(_effectiveController.value);
   }
 }
