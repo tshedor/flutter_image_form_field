@@ -1,6 +1,6 @@
 ## Unreleased
 
-## [0.0.4]
+## [0.1.0] - 7 February 2021
 
 * Fix deprecations in image_picker (#8) and in Firebase upload (#2)
 
