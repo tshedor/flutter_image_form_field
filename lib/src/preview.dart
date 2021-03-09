@@ -6,14 +6,14 @@ import 'types.dart';
 
 class _ImagePreview<T> extends StatelessWidget {
   const _ImagePreview({
-    Key key,
-    @required this.image,
-    @required this.previewImageBuilder,
+    Key? key,
+    required this.image,
+    required this.previewImageBuilder,
     this.onRemove,
   }) : super(key: key);
 
   final T image;
-  final VoidCallback onRemove;
+  final VoidCallback? onRemove;
   final BuildImagePreviewCallback<T> previewImageBuilder;
 
   @override
@@ -27,19 +27,19 @@ class _ImagePreview<T> extends StatelessWidget {
             onTap: onRemove,
             child: const Icon(
               Icons.close,
-              color: const Color(0xFFFFFFFF)
-            )
+              color: Color(0xFFFFFFFF),
+            ),
           )
-        ]
-      )
+        ],
+      ),
     );
   }
 }
 
 class ImagesPreview<T> extends StatefulWidget {
   const ImagesPreview({
-    @required this.controller,
-    @required this.previewImageBuilder
+    required this.controller,
+    required this.previewImageBuilder,
   });
 
   final ImageFieldController<T> controller;
@@ -50,34 +50,39 @@ class ImagesPreview<T> extends StatefulWidget {
 }
 
 class _ImagesPreviewState<T> extends State<ImagesPreview> {
-  List<T> images;
+  List<T>? images;
 
   Widget buildImage(T image) {
     if (image == null) return Container();
 
     return _ImagePreview<T>(
-        image: image,
-        previewImageBuilder: widget.previewImageBuilder,
-        onRemove: () => widget.controller.remove(image));
+      image: image,
+      previewImageBuilder: widget.previewImageBuilder,
+      onRemove: () => widget.controller.remove(image),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (images == null || images.isEmpty) return Container();
+    if (images?.isEmpty ?? true) return Container();
 
     return Container(
-        margin: const EdgeInsets.only(top: 10.0),
-        child: images.length == 1
-            ? SizedBox(child: buildImage(images.first))
-            : SizedBox(
-                height: 150.0,
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisSpacing: 10.0, crossAxisCount: 1),
-                  itemCount: images.length,
-                  itemBuilder: (_, idx) => buildImage(images[idx]),
-                  scrollDirection: Axis.horizontal,
-                )));
+      margin: const EdgeInsets.only(top: 10.0),
+      child: images!.length == 1
+          ? SizedBox(child: buildImage(images!.first))
+          : SizedBox(
+              height: 150.0,
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisSpacing: 10.0,
+                  crossAxisCount: 1,
+                ),
+                itemCount: images!.length,
+                itemBuilder: (_, idx) => buildImage(images![idx]),
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+    );
   }
 
   void _setImages() {
