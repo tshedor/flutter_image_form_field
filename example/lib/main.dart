@@ -24,7 +24,7 @@ class BlogImage {
     @required this.storagePath,
     @required this.originalUrl,
     @required this.bucketName,
-    this.id
+    this.id,
   });
 
   final String storagePath;
@@ -36,16 +36,17 @@ class BlogImage {
 
   create() {
     return Firestore.instance.collection(collectionPath).document().setData({
-      "storagePath" : storagePath,
-      "originalUrl" : originalUrl,
-      "bucketName" : bucketName
+      "storagePath": storagePath,
+      "originalUrl": originalUrl,
+      "bucketName": bucketName,
     });
   }
 
   static Future<BlogImage> fromUrl(String url) async {
-    final images = await Firestore.instance.collection(collectionPath)
-      .where("originalUrl", isEqualTo: url)
-      .getDocuments();
+    final images = await Firestore.instance
+        .collection(collectionPath)
+        .where("originalUrl", isEqualTo: url)
+        .getDocuments();
 
     if (images.documents.isNotEmpty) {
       final i = images.documents.first.data;
@@ -54,7 +55,7 @@ class BlogImage {
         storagePath: i["storagePath"],
         originalUrl: i["originalUrl"],
         bucketName: i["bucketName"],
-        id: images.documents.first.documentID
+        id: images.documents.first.documentID,
       );
     }
 
@@ -68,9 +69,7 @@ class BlogImage {
 }
 
 class _UploadForm extends StatefulWidget {
-  _UploadForm(
-    this.existingImages
-  );
+  _UploadForm(this.existingImages);
 
   final List<BlogImage> existingImages;
 
@@ -83,42 +82,33 @@ class _UploadFormState extends State<_UploadForm> {
   List<ImageInputAdapter> _images;
 
   void submit() {
-    if( _formKey.currentState.validate() ) {
+    if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       var snackbarText = "Upload successful";
 
       try {
         // New images
-        _images
-          ?.where((i) => i.isFile)
-          ?.forEach((i) async {
-            final photo = await i.save();
+        _images?.where((i) => i.isFile)?.forEach((i) async {
+          final photo = await i.save();
 
-            BlogImage(
-              storagePath: photo.refPath,
-              originalUrl: photo.originalUrl,
-              bucketName: photo.bucketName
-            ).create();
-          });
+          BlogImage(
+            storagePath: photo.refPath,
+            originalUrl: photo.originalUrl,
+            bucketName: photo.bucketName,
+          ).create();
+        });
 
         // Removed images
         widget.existingImages
-          ?.where((r) =>
-            !_images.any((m) => m.url == r.originalUrl)
-          )
-          ?.forEach((i) {
-            BlogImage.fromUrl(i.originalUrl).then((b) => b?.delete());
-          });
-
-      } catch(e) {
+            ?.where((r) => !_images.any((m) => m.url == r.originalUrl))
+            ?.forEach((i) {
+          BlogImage.fromUrl(i.originalUrl).then((b) => b?.delete());
+        });
+      } catch (e) {
         print(e);
         snackbarText = "Couldn't save. Please try again later.";
       } finally {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-            content: Text(snackbarText)
-          )
-        );
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text(snackbarText)));
       }
     }
   }
@@ -134,22 +124,26 @@ class _UploadFormState extends State<_UploadForm> {
           ImageFormField<ImageInputAdapter>(
             shouldAllowMultiple: shouldAllowMultiple,
             onSaved: (val) => _images = val,
-            initialValue: widget.existingImages.map((i) => ImageInputAdapter(url: i.originalUrl)).toList().cast<ImageInputAdapter>(),
-            initializeFileAsImage: (file) =>
-              ImageInputAdapter(file: UploadableImage(file, storagePath: "appImages")),
-            buttonBuilder: (_, count) =>
-              PhotoUploadButton(
-                count: count,
-                shouldAllowMultiple: shouldAllowMultiple
+            initialValue: widget.existingImages
+                .map((i) => ImageInputAdapter(url: i.originalUrl))
+                .toList()
+                .cast<ImageInputAdapter>(),
+            initializeFileAsImage: (file) => ImageInputAdapter(
+              file: UploadableImage(
+                file,
+                storagePath: "appImages",
               ),
-            previewImageBuilder: (_, image) => image.widgetize()
+            ),
+            buttonBuilder: (_, count) =>
+                PhotoUploadButton(count: count, shouldAllowMultiple: shouldAllowMultiple),
+            previewImageBuilder: (_, image) => image.widgetize(),
           ),
           FlatButton(
             onPressed: submit,
-            child: const Text("Update Profile")
+            child: const Text("Update Profile"),
           )
-        ]
-      )
+        ],
+      ),
     );
   }
 }
@@ -158,13 +152,10 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Upload Images")
-      ),
+      appBar: AppBar(centerTitle: true, title: const Text("Upload Images")),
       body: SingleChildScrollView(
         // Provide existing images as the first argument
-        child: _UploadForm(List<BlogImage>())
+        child: _UploadForm(List<BlogImage>()),
       ),
     );
   }

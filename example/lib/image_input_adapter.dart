@@ -1,23 +1,26 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 
 class ImageInputAdapter {
   /// Initialize from either a URL or a file, but not both.
-  ImageInputAdapter({
-    this.file,
-    this.url
-  }) : assert(file != null || url != null), assert(file != null && url == null), assert(file == null && url != null);
+  ImageInputAdapter({this.file, this.url})
+      : assert(file != null || url != null),
+        assert(file != null && url == null),
+        assert(file == null && url != null);
 
   /// An image file
   final UploadableImage file;
+
   /// A direct link to the remote image
   final String url;
 
   /// If instance was initialized with a file
   bool get isFile => file != null;
+
   /// If instance was initialized with a URL
   bool get isUrl => url != null;
 
@@ -38,12 +41,11 @@ class ImageInputAdapter {
   Future<UploadResponse> save() => file?.save();
 }
 
-
 class UploadResponse {
   UploadResponse({
     @required this.refPath,
     @required this.originalUrl,
-    @required this.bucketName
+    @required this.bucketName,
   });
 
   /// Firebase storage reference path
@@ -58,14 +60,13 @@ class UploadResponse {
 
 class UploadableImage {
   UploadableImage(
-    this.image,
-    {
-      @required this.storagePath
-    }
-  );
+    this.image, {
+    @required this.storagePath,
+  });
 
   /// Input file
   final File image;
+
   /// FirebaseStorage folder name
   final String storagePath;
 
@@ -74,15 +75,16 @@ class UploadableImage {
   Future<UploadResponse> save() async {
     final uuid = new Uuid().v1();
     final _refPath = "$storagePath/$uuid.jpg";
-    StorageReference ref = FirebaseStorage.instance.ref().child(_refPath);
-    StorageUploadTask uploadTask = ref.putFile(image);
-    final _uploaded = await uploadTask.future;
+    final ref = FirebaseStorage.instance.ref().child(_refPath);
+    final file = File(image.path);
+    final uploadTask = await ref.putFile(file).onComplete;
     final _bucketName = await ref.getBucket();
+    final downloadUrl = await uploadTask.ref.getDownloadURL();
 
     return UploadResponse(
       refPath: _refPath,
-      originalUrl: _uploaded.downloadUrl.toString(),
-      bucketName: _bucketName
+      originalUrl: downloadUrl.toString(),
+      bucketName: _bucketName,
     );
   }
 }

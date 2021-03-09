@@ -1,4 +1,4 @@
-import 'dart:io' show File;
+import 'dart:io';
 import 'package:flutter/widgets.dart' show Widget, BuildContext;
 
 typedef BuildImagePreviewCallback<T> = Widget Function(BuildContext, dynamic);
