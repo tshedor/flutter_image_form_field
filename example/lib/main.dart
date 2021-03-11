@@ -34,8 +34,8 @@ class BlogImage {
 
   static String get collectionPath => 'blogImages';
 
-  void create() {
-    return Firestore.instance.collection(collectionPath).document().setData({
+  Future<void> create() {
+    return FirebaseFirestore.instance.collection(collectionPath).doc().set({
       'storagePath': storagePath,
       'originalUrl': originalUrl,
       'bucketName': bucketName,
@@ -43,19 +43,19 @@ class BlogImage {
   }
 
   static Future<BlogImage?> fromUrl(String url) async {
-    final images = await Firestore.instance
+    final images = await FirebaseFirestore.instance
         .collection(collectionPath)
         .where('originalUrl', isEqualTo: url)
-        .getDocuments();
+        .get();
 
-    if (images.documents.isNotEmpty) {
-      final i = images.documents.first.data;
+    if (images.docs.isNotEmpty) {
+      final i = images.docs.first.data();
 
       return BlogImage(
-        storagePath: i['storagePath'],
-        originalUrl: i['originalUrl'],
-        bucketName: i['bucketName'],
-        id: images.documents.first.documentID,
+        storagePath: i?['storagePath'],
+        originalUrl: i?['originalUrl'],
+        bucketName: i?['bucketName'],
+        id: images.docs.first.id,
       );
     }
 
@@ -64,7 +64,7 @@ class BlogImage {
 
   Future delete() async {
     await FirebaseStorage.instance.ref().child(storagePath).delete();
-    return Firestore.instance.collection(collectionPath).document(id).delete();
+    return FirebaseFirestore.instance.collection(collectionPath).doc(id).delete();
   }
 }
 
@@ -91,7 +91,7 @@ class _UploadFormState extends State<_UploadForm> {
         _images?.where((i) => i.isFile).forEach((i) async {
           final photo = await i.save();
 
-          BlogImage(
+          await BlogImage(
             storagePath: photo.refPath,
             originalUrl: photo.originalUrl,
             bucketName: photo.bucketName,

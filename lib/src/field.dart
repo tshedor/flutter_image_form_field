@@ -22,10 +22,10 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
     required BuildButton buttonBuilder,
     required InitializeFileAsImageCallback<T> initializeFileAsImage,
     List<T>? initialValue,
-    FormFieldSetter<List<T>> onSaved,
-    FormFieldValidator<List<T>> validator,
-    TextStyle errorTextStyle,
-    AutovalidateMode autovalidateMode,
+    FormFieldSetter<List<T>>? onSaved,
+    FormFieldValidator<List<T>>? validator,
+    TextStyle? errorTextStyle,
+    AutovalidateMode? autovalidateMode,
     bool shouldAllowMultiple = true,
   }) : super(
           key: key,
@@ -34,26 +34,28 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
           validator: validator,
           autovalidateMode: autovalidateMode,
           builder: (FormFieldState<List<T>> field) {
-            final _ImageFormFieldState<T> state = field;
+            final state = field as _ImageFormFieldState<T>;
 
             return ListBody(
               children: [
-                ImageButton<T>(
-                  controller: state._effectiveController,
-                  buttonBuilder: buttonBuilder,
-                  initializeFileAsImage: initializeFileAsImage,
-                  shouldAllowMultiple: shouldAllowMultiple,
-                ),
+                if (state._effectiveController != null)
+                  ImageButton<T>(
+                    controller: state._effectiveController!,
+                    buttonBuilder: buttonBuilder,
+                    initializeFileAsImage: initializeFileAsImage,
+                    shouldAllowMultiple: shouldAllowMultiple,
+                  ),
                 field.hasError
                     ? Text(
-                        field.errorText,
+                        field.errorText ?? '',
                         style: errorTextStyle,
                       )
                     : Container(),
-                ImagesPreview<T>(
-                  controller: state._effectiveController,
-                  previewImageBuilder: previewImageBuilder,
-                )
+                if (state._effectiveController != null)
+                  ImagesPreview<T>(
+                    controller: state._effectiveController!,
+                    previewImageBuilder: previewImageBuilder,
+                  )
               ],
             );
           },
@@ -67,33 +69,37 @@ class ImageFormField<T extends Object> extends FormField<List<T>> {
 }
 
 // Adapted from [TextFormField]
-class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
+class _ImageFormFieldState<T extends Object> extends FormFieldState<List<T>> {
   ImageFieldController<T>? _controller;
 
-  ImageFieldController<T>? get _effectiveController => widget.controller ?? _controller;
+  ImageFieldController<T>? get _effectiveController =>
+      (widget as ImageFormField<T>).controller ?? _controller!;
+
+  @override
+  ImageFormField<T> get _widget => widget as ImageFormField<T>;
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller == null) {
-      _controller = ImageFieldController<T>(widget.initialValue);
+    if (_widget.controller == null && _widget.initialValue != null) {
+      _controller = ImageFieldController<T>(_widget.initialValue!);
     } else {
-      widget.controller!.addListener(_handleControllerChanged);
+      _widget.controller!.addListener(_handleControllerChanged);
     }
   }
 
   @override
   void didUpdateWidget(ImageFormField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
+    if (_widget.controller != oldWidget.controller) {
       oldWidget.controller?.removeListener(_handleControllerChanged);
-      widget.controller?.addListener(_handleControllerChanged);
+      _widget.controller?.addListener(_handleControllerChanged);
 
-      if (oldWidget.controller != null && widget.controller == null) {
+      if (oldWidget.controller != null && _widget.controller == null) {
         _controller = ImageFieldController<T>(oldWidget.controller!.value);
       }
-      if (widget.controller != null) {
-        setValue(widget.controller!.value);
+      if (_widget.controller != null) {
+        setValue(_widget.controller!.value);
         if (oldWidget.controller == null) _controller = null;
       }
     }
@@ -101,7 +107,7 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
 
   @override
   void dispose() {
-    widget.controller?.removeListener(_handleControllerChanged);
+    _widget.controller?.removeListener(_handleControllerChanged);
     super.dispose();
   }
 
@@ -110,7 +116,7 @@ class _ImageFormFieldState<T> extends FormFieldState<List<T>> {
     super.reset();
     setState(() {
       _effectiveController?.clear();
-      _effectiveController?.resetTo(widget.initialValue);
+      if (widget.initialValue != null) _effectiveController?.resetTo(widget.initialValue!);
     });
   }
 

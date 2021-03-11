@@ -87,7 +87,7 @@ class _ImagesPreviewState<T> extends State<ImagesPreview> {
 
   void _setImages() {
     setState(() {
-      images = widget.controller.value;
+      images = widget.controller.value as List<T>;
     });
   }
 
