@@ -75,7 +75,6 @@ class _ImageFormFieldState<T extends Object> extends FormFieldState<List<T>> {
   ImageFieldController<T>? get _effectiveController =>
       (widget as ImageFormField<T>).controller ?? _controller!;
 
-  @override
   ImageFormField<T> get _widget => widget as ImageFormField<T>;
 
   @override
