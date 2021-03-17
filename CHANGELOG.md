@@ -1,5 +1,9 @@
 ## Unreleased
 
+## [1.0.0-nullsafety.0] - 10 March 2021
+
+* Migrate to sound null safety
+
 ## [0.1.0] - 7 February 2021
 
 * Fix deprecations in image_picker (#8) and in Firebase upload (#2)

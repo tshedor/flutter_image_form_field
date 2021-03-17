@@ -6,85 +6,52 @@ import 'package:image_form_field/image_form_field.dart';
 import 'image_input_adapter.dart';
 import 'upload_button.dart';
 
-class _ProfileForm extends StatefulWidget {
-  @override
-  _ProfileFormState createState() => _ProfileFormState();
-}
-
-class _ProfileFormState extends State<_ProfileForm> {
+class _ProfileForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  List<ImageInputAdapter> _images;
-  FirebaseUser _user;
-  bool _doesUserExist = true;
+  List<ImageInputAdapter>? _images;
 
-  void submit() {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      var newInfo = new UserUpdateInfo();
-      final uploadedFile = _images.firstWhere((i) => i.isFile, orElse: () => null);
+  void submit(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
+      final uploadedFile = _images?.firstWhere((i) => i.isFile);
 
       if (uploadedFile != null) {
-        uploadedFile.save().then((resp) {
-          newInfo.photoUrl = resp.originalUrl;
-        });
+        final resp = await uploadedFile.save();
+        await FirebaseAuth.instance.currentUser?.updateProfile(photoURL: resp.originalUrl);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lookin' good!")));
       }
-
-      FirebaseAuth.instance.updateProfile(newInfo).then((u) {
-        Scaffold.of(context).showSnackBar(const SnackBar(content: const Text("Lookin' good!")));
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_doesUserExist) return const Center(child: const Text("Please sign in"));
-
-    if (_user == null) return const Center(child: CircularProgressIndicator());
-
-    final bool shouldAllowMultiple = false;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const Center(child: Text('Please sign in'));
 
     return Form(
       key: _formKey,
       child: ListBody(
         children: [
           ImageFormField<ImageInputAdapter>(
-              shouldAllowMultiple: shouldAllowMultiple,
-              onSaved: (val) => _images = val,
-              initialValue: _user?.photoUrl == null
-                  ? null
-                  : (List<ImageInputAdapter>()..add(ImageInputAdapter(url: _user.photoUrl))),
-              initializeFileAsImage: (file) =>
-                  ImageInputAdapter(file: UploadableImage(file, storagePath: "profileImages")),
-              buttonBuilder: (_, count) =>
-                  PhotoUploadButton(count: count, shouldAllowMultiple: shouldAllowMultiple),
-              previewImageBuilder: (_, image) => image.widgetize()),
-          FlatButton(
-            onPressed: submit,
-            child: const Text("Update Profile"),
+            shouldAllowMultiple: false,
+            onSaved: (val) => _images = val,
+            initialValue: user.photoURL == null ? null : [ImageInputAdapter(url: user.photoURL)],
+            initializeFileAsImage: (file) => ImageInputAdapter(
+              file: UploadableImage(file, storagePath: 'profileImages'),
+            ),
+            buttonBuilder: (_, count) => PhotoUploadButton(
+              count: count,
+              shouldAllowMultiple: false,
+            ),
+            previewImageBuilder: (_, image) => image.widgetize(),
+          ),
+          TextButton(
+            onPressed: () => submit(context),
+            child: const Text('Update Profile'),
           )
         ],
       ),
     );
-  }
-
-  _fetchUser() async {
-    final user = await FirebaseAuth.instance.currentUser();
-
-    if (user == null) {
-      return setState(() {
-        _doesUserExist = false;
-      });
-    }
-
-    setState(() {
-      _user = user;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUser();
   }
 }
 
@@ -94,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Edit Profile"),
+        title: const Text('Edit Profile'),
       ),
       body: SingleChildScrollView(
         child: _ProfileForm(),
