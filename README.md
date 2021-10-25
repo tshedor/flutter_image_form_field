@@ -2,6 +2,23 @@
 
 Handle image uploads in a Flutter `Form`.
 
+## Installation
+
+First, add image_form_field as a dependency in your pubspec.yaml file.
+
+### IOS
+
+This plugin requires iOS 9.0 or higher
+
+Add the following keys to your Info.plist file, located in <project root>/ios/Runner/Info.plist:
+
+* `NSPhotoLibraryUsageDescription` - describe why your app needs permission for the photo library. This is called Privacy - Photo Library Usage Description in the visual editor.
+* `NSCameraUsageDescription` - describe why your app needs access to the camera. This is called Privacy - Camera Usage Description in the visual editor.
+
+### Android
+
+No configuration required.
+
 ## Usage
 
 In order to fully customize the photo upload field, several callbacks and classes are required. In most cases, you will be mixing photos from a remote source and a local upload. For these, an adapter layer is useful:
